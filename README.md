@@ -5,12 +5,14 @@ A modern web interface to view and manage Discord bot Wish data, with a Discord-
 ## 🚀 Features
 
 - **Complete Dashboard**: Overview of all database tables
-- **Table Visualization**: Advanced filters for date, time and user
+- **Table Visualization**: Advanced filters for date, time, user, type, status, and command
 - **Chat Interface**: Discord-like message view with channel sidebar
 - **Message Management**: Toggle for `to_maintain` field with real-time updates
+- **Text Search**: Search within message content
 - **Dark Theme**: Modern design inspired by Discord
-- **Responsive**: Optimized for desktop and mobile
-- **Advanced Filters**: For date, time, user and message status
+- **Responsive**: Optimized for desktop and mobile with collapsible sidebar
+- **Advanced Filters**: For date, time, user, message status, and text search
+- **Mobile Navigation**: Hamburger menu for mobile devices
 
 ## 📋 Prerequisites
 
@@ -97,22 +99,29 @@ The application supports the following tables:
 - Date and time filters
 - Pagination (50 records per page)
 - User filter (if available)
+- Type filter (for tables with type column)
+- Status filter (for tables with status column)
+- Command filter (for commands table)
 - `to_maintain` status filter (for messages table)
 
 ### Messages Interface (`/messages`)
 - **Channel Sidebar**: Channel list with emojis and counters
 - **Chat Area**: Discord-style message view
-- **Advanced Filters**: Date, time, user, status
+- **Advanced Filters**: Date, time, user, status, and text search
 - **`to_maintain` Toggle**: Real-time updates
 - **Auto-refresh**: Automatic update every 30 seconds
+- **Full-screen Layout**: Optimized space utilization
 
 ## 🎨 Design
 
 - **Dark Theme**: Discord-inspired colors
 - **Modern Font**: Inter font family
 - **Icons**: Font Awesome 6
-- **Responsive**: Optimized for all devices
+- **Responsive**: Optimized for all devices with collapsible sidebar
 - **Animations**: Smooth transitions and visual feedback
+- **Mobile Navigation**: Hamburger menu for mobile devices
+- **Active Section Highlighting**: Current page highlighted in sidebar
+- **Full-screen Messages**: Optimized layout for message viewing
 
 ## 🔧 Advanced Configuration
 
@@ -156,6 +165,8 @@ DEBUG=False                   # Debug mode (True for development, False for prod
 - **Browsers**: Chrome, Firefox, Safari, Edge
 - **Devices**: Desktop, tablet, mobile
 - **Systems**: Windows, macOS, Linux, Raspberry Pi
+- **Mobile**: Responsive design with collapsible sidebar
+- **Touch**: Optimized for touch interactions
 
 ## 🐛 Troubleshooting
 
@@ -182,6 +193,25 @@ Error: Permission denied
 1. **Database backup** before updates
 2. **Test in development environment**
 3. **Restart application** after changes
+
+## 🆕 Recent Features
+
+### Mobile Navigation
+- **Hamburger Menu**: Collapsible sidebar on mobile devices
+- **Touch Optimized**: Better touch interactions
+- **Responsive Design**: Adapts to all screen sizes
+
+### Enhanced Filters
+- **Type Filter**: Filter by type in relevant tables
+- **Status Filter**: Filter by status in verification table
+- **Command Filter**: Filter by command in commands table
+- **Text Search**: Search within message content
+
+### UI Improvements
+- **Active Section Highlighting**: Current page highlighted in sidebar
+- **Full-screen Messages**: Optimized layout for message viewing
+- **Improved Dropdowns**: Better styled filter dropdowns
+- **Consistent Design**: Uniform styling across all pages
 
 ## 📞 Support
 
