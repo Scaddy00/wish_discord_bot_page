@@ -141,6 +141,29 @@ body {
     z-index: 100;
 }
 
+/* Main hamburger button (for sidebar) */
+.mobile-menu-toggle {
+    z-index: 100;
+}
+
+/* Messages hamburger buttons */
+.messages-main .mobile-menu-toggle {
+    z-index: 101;
+}
+
+/* Position main hamburger button outside messages container */
+.messages-view-container ~ .mobile-menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+/* Position messages hamburger button */
+.messages-header-mobile .mobile-menu-toggle {
+    z-index: 101;
+}
+
 .mobile-menu-toggle:hover {
     background-color: #40444b;
 }
@@ -360,12 +383,12 @@ body {
     .filters-form {
         grid-template-columns: 1fr;
         gap: 12px;
-    }
-    
-    .filter-group {
+}
+
+.filter-group {
         margin-bottom: 8px;
-    }
-    
+}
+
     .filters-panel {
         padding: 16px;
         margin-bottom: 16px;
@@ -654,6 +677,12 @@ select.form-control:focus {
     padding: 16px 20px;
     border-bottom: 1px solid #202225;
     background-color: #36393f;
+}
+
+.mobile-menu-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 
 .messages-sidebar {
@@ -1001,20 +1030,36 @@ select.form-control:focus {
     
     .content-body {
         padding: 16px 20px;
+        padding-top: 60px; /* Space for hamburger button */
     }
     
     .content-body .messages-view-container {
         margin: 0;
         height: 100vh;
+        padding-top: 0; /* No extra padding for messages page */
     }
     
     .content-body:has(.messages-view-container) {
         padding: 0;
+        padding-top: 0; /* No extra padding for messages page */
     }
     
     .mobile-menu-toggle {
         top: 12px;
         left: 12px;
+    }
+    
+    /* Fix for messages page hamburger buttons */
+    .messages-header-mobile .mobile-menu-toggle {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-bottom: 0;
+    }
+    
+    /* Ensure messages sidebar hamburger doesn't overlap */
+    .messages-main .mobile-menu-toggle {
+        z-index: 101; /* Higher than the main hamburger */
     }
     
     .messages-view-container {
@@ -1033,6 +1078,10 @@ select.form-control:focus {
     
     .messages-header-mobile {
         display: block;
+    }
+    
+    .mobile-menu-buttons {
+        gap: 8px;
     }
     
     .messages-sidebar {

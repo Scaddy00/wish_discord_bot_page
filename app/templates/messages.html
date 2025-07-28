@@ -4,12 +4,17 @@
 {% block page_title %}Messages{% endblock %}
 
 {% block content %}
+<!-- Mobile menu toggle for main sidebar -->
+<button class="mobile-menu-toggle" id="mobile-menu-toggle">
+    <i class="fas fa-bars"></i>
+</button>
+
 <div class="messages-view-container">
-    <div class="messages-view">
+<div class="messages-view">
         <!-- Mobile overlay for messages sidebar -->
         <div class="sidebar-overlay" id="messages-sidebar-overlay"></div>
         
-        <!-- Sidebar with channels -->
+    <!-- Sidebar with channels -->
         <div class="messages-sidebar" id="messages-sidebar">
         <div class="sidebar-header">
             <h3><i class="fas fa-hashtag"></i> Channels</h3>
@@ -34,15 +39,17 @@
 
             <!-- Main chat area -->
         <div class="messages-main">
-            <!-- Mobile menu toggle for messages sidebar -->
+            <!-- Mobile menu toggle for channels sidebar -->
             <div class="messages-header-mobile">
-                <button class="mobile-menu-toggle" id="messages-mobile-menu-toggle">
-                    <i class="fas fa-hashtag"></i>
-                </button>
+                <div class="mobile-menu-buttons">
+                    <button class="mobile-menu-toggle" id="messages-mobile-menu-toggle">
+                        <i class="fas fa-hashtag"></i>
+                    </button>
+                </div>
             </div>
             
-            <!-- Filters -->
-            <div class="messages-filters">
+        <!-- Filters -->
+        <div class="messages-filters">
             <form id="messages-filters-form" class="filters-form">
                 <div class="filter-group">
                     <label for="date_from">Date from:</label>
@@ -90,22 +97,22 @@
         <!-- Messages container -->
         <div class="messages-container">
             <div class="messages-table-container">
-                <div class="messages-header">
-                    <h3>
-                        {% if selected_channel %}
-                            {% for channel in channels %}
-                                {% if channel.channel_id == selected_channel %}
-                                    {{ channel.channel_name }}
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            All channels
-                        {% endif %}
-                    </h3>
-                    <span class="messages-count">{{ pagination.total }} messages</span>
-                </div>
+            <div class="messages-header">
+                <h3>
+                    {% if selected_channel %}
+                        {% for channel in channels %}
+                            {% if channel.channel_id == selected_channel %}
+                                {{ channel.channel_name }}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        All channels
+                    {% endif %}
+                </h3>
+                <span class="messages-count">{{ pagination.total }} messages</span>
+            </div>
 
-                <div class="messages-list" id="messages-list">
+            <div class="messages-list" id="messages-list">
                 {% for message in messages %}
                 <div class="message-item" data-message-id="{{ loop.index }}">
                     <div class="message-header">
@@ -133,28 +140,28 @@
                     </div>
                 </div>
                 {% endfor %}
-                </div>
+            </div>
 
-                <!-- Pagination -->
-                {% if pagination.total_pages > 1 %}
-                <div class="messages-pagination">
-                    {% if pagination.page > 1 %}
-                    <a href="?page={{ pagination.page - 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
-                        <i class="fas fa-chevron-left"></i> Previous
-                    </a>
-                    {% endif %}
-                    
-                    <span class="pagination-info">
-                        Page {{ pagination.page }} of {{ pagination.total_pages }}
-                    </span>
-                    
-                    {% if pagination.page < pagination.total_pages %}
-                    <a href="?page={{ pagination.page + 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
-                        Next <i class="fas fa-chevron-right"></i>
-                    </a>
-                    {% endif %}
-                </div>
+            <!-- Pagination -->
+            {% if pagination.total_pages > 1 %}
+            <div class="messages-pagination">
+                {% if pagination.page > 1 %}
+                <a href="?page={{ pagination.page - 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
                 {% endif %}
+                
+                <span class="pagination-info">
+                    Page {{ pagination.page }} of {{ pagination.total_pages }}
+                </span>
+                
+                {% if pagination.page < pagination.total_pages %}
+                <a href="?page={{ pagination.page + 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
             </div>
                     </div>
         </div>

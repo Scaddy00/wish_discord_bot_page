@@ -12,6 +12,11 @@
 {% endblock %}
 
 {% block content %}
+<!-- Mobile menu toggle -->
+<button class="mobile-menu-toggle" id="mobile-menu-toggle">
+    <i class="fas fa-bars"></i>
+</button>
+
 <div class="table-view">
     <!-- Filters -->
     <div class="filters-panel">
@@ -172,7 +177,7 @@ function clearFilters() {
         const element = document.getElementById(filterId);
         if (element) {
             element.value = 'all';
-        }
+    }
     });
     
     // Submit the form
