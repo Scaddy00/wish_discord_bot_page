@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Wish Discord Bot{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard-header">
+        <h2>Database Overview</h2>
+        <p>View and manage Discord bot data</p>
+    </div>
+
+    <div class="table-grid">
+        {% for table in tables %}
+        <div class="table-card">
+            <div class="table-card-header">
+                <h3>{{ table.name|title }}</h3>
+                <span class="table-count">{{ table.count }} records</span>
+            </div>
+            <div class="table-card-body">
+                <p>View and filter data from table {{ table.name }}</p>
+            </div>
+            <div class="table-card-actions">
+                <a href="{{ table.url }}" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> View
+                </a>
+                {% if table.name == 'messages' %}
+                <a href="{{ url_for('main.messages_view') }}" class="btn btn-secondary">
+                    <i class="fas fa-comments"></i> Chat View
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-database"></i>
+            </div>
+            <div class="stats-content">
+                <h3>{{ tables|length }}</h3>
+                <p>Total Tables</p>
+            </div>
+        </div>
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="stats-content">
+                <h3>{{ tables|selectattr('name', 'equalto', 'messages')|first|attr('count') }}</h3>
+                <p>Total Messages</p>
+            </div>
+        </div>
+        <div class="stats-card">
+            <div class="stats-icon">
+                <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stats-content">
+                <h3>{{ tables|selectattr('name', 'equalto', 'events')|first|attr('count') }}</h3>
+                <p>Total Events</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

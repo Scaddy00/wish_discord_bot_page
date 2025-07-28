@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ table_name|title }} - Wish Discord Bot{% endblock %}
+{% block page_title %}{{ table_name|title }}{% endblock %}
+
+{% block header_actions %}
+<div class="header-actions">
+    <button class="btn btn-secondary" onclick="exportTable()">
+        <i class="fas fa-download"></i> Export
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="table-view">
+    <!-- Filters -->
+    <div class="filters-panel">
+        <form id="filters-form" class="filters-form">
+            <div class="filter-group">
+                <label for="date_from">Date from:</label>
+                <input type="datetime-local" id="date_from" name="date_from" 
+                       value="{{ filters.date_from }}" class="form-control">
+            </div>
+            <div class="filter-group">
+                <label for="date_to">Date to:</label>
+                <input type="datetime-local" id="date_to" name="date_to" 
+                       value="{{ filters.date_to }}" class="form-control">
+            </div>
+            {% if 'user_name' in schema|map(attribute='name') %}
+            <div class="filter-group">
+                <label for="user_filter">User:</label>
+                <input type="text" id="user_filter" name="user_filter" 
+                       value="{{ filters.user_filter }}" placeholder="Filter by user" class="form-control">
+            </div>
+            {% endif %}
+            {% if 'to_maintain' in schema|map(attribute='name') %}
+            <div class="filter-group">
+                <label for="to_maintain">Status:</label>
+                <select id="to_maintain" name="to_maintain" class="form-control">
+                    <option value="all" {% if filters.to_maintain == 'all' %}selected{% endif %}>All</option>
+                    <option value="True" {% if filters.to_maintain == 'True' %}selected{% endif %}>To maintain</option>
+                    <option value="False" {% if filters.to_maintain == 'False' %}selected{% endif %}>Not to maintain</option>
+                </select>
+            </div>
+            {% endif %}
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3>Table data: {{ table_name }}</h3>
+            <span class="table-info">{{ pagination.total }} total records</span>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        {% for column in schema %}
+                        <th>{{ column.name|replace('_', ' ')|title }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        {% for column in schema %}
+                        <td>
+                            {% if column.name == 'timestamp' %}
+                                <span class="timestamp">{{ row[column.name] }}</span>
+                            {% elif column.name == 'to_maintain' %}
+                                <span class="status-badge status-{{ row[column.name]|lower }}">
+                                    {{ row[column.name] }}
+                                </span>
+                            {% else %}
+                                {{ row[column.name] }}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.total_pages > 1 %}
+        <div class="pagination">
+            {% if pagination.page > 1 %}
+            <a href="?page={{ pagination.page - 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                <i class="fas fa-chevron-left"></i> Previous
+            </a>
+            {% endif %}
+            
+            <span class="pagination-info">
+                Page {{ pagination.page }} of {{ pagination.total_pages }}
+            </span>
+            
+            {% if pagination.page < pagination.total_pages %}
+            <a href="?page={{ pagination.page + 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                Next <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function clearFilters() {
+    document.getElementById('date_from').value = '';
+    document.getElementById('date_to').value = '';
+    document.getElementById('user_filter').value = '';
+    if (document.getElementById('to_maintain')) {
+        document.getElementById('to_maintain').value = 'all';
+    }
+    document.getElementById('filters-form').submit();
+}
+
+function exportTable() {
+    // TODO: Implement export functionality
+    showToast('Export functionality coming soon!', 'info');
+}
+</script>
+{% endblock %} 

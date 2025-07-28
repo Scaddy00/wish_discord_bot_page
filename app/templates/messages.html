@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Messages - Wish Discord Bot{% endblock %}
+{% block page_title %}Messages{% endblock %}
+
+{% block content %}
+<div class="messages-view">
+    <!-- Sidebar with channels -->
+    <div class="messages-sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-hashtag"></i> Channels</h3>
+        </div>
+        <div class="channels-list">
+            <a href="{{ url_for('main.messages_view') }}" 
+               class="channel-item {% if not selected_channel %}active{% endif %}">
+                <span class="channel-icon"><i class="fas fa-globe"></i></span>
+                <span class="channel-name">All channels</span>
+                <span class="channel-count">{{ pagination.total }}</span>
+            </a>
+            {% for channel in channels %}
+            <a href="{{ url_for('main.messages_view', channel_id=channel.channel_id) }}" 
+               class="channel-item {% if selected_channel == channel.channel_id %}active{% endif %}">
+                <span class="channel-icon">{{ channel.channel_name.split('┊')[0] if '┊' in channel.channel_name else '#' }}</span>
+                <span class="channel-name">{{ channel.channel_name.split('┊')[1] if '┊' in channel.channel_name else channel.channel_name }}</span>
+                <span class="channel-count">{{ channel.message_count }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Main chat area -->
+    <div class="messages-main">
+        <!-- Filters -->
+        <div class="messages-filters">
+            <form id="messages-filters-form" class="filters-form">
+                <div class="filter-group">
+                    <label for="date_from">Date from:</label>
+                    <input type="datetime-local" id="date_from" name="date_from" 
+                           value="{{ filters.date_from }}" class="form-control">
+                </div>
+                <div class="filter-group">
+                    <label for="date_to">Date to:</label>
+                    <input type="datetime-local" id="date_to" name="date_to" 
+                           value="{{ filters.date_to }}" class="form-control">
+                </div>
+                <div class="filter-group">
+                    <label for="user_filter">User:</label>
+                    <select id="user_filter" name="user_filter" class="form-control">
+                        <option value="">All users</option>
+                        {% for user in users %}
+                        <option value="{{ user }}" {% if filters.user_filter == user %}selected{% endif %}>{{ user }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="to_maintain">Status:</label>
+                    <select id="to_maintain" name="to_maintain" class="form-control">
+                        <option value="all" {% if filters.to_maintain == 'all' %}selected{% endif %}>All messages</option>
+                        <option value="True" {% if filters.to_maintain == 'True' %}selected{% endif %}>To maintain</option>
+                        <option value="False" {% if filters.to_maintain == 'False' %}selected{% endif %}>Not to maintain</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Filter
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Messages container -->
+        <div class="messages-container">
+            <div class="messages-header">
+                <h3>
+                    {% if selected_channel %}
+                        {% for channel in channels %}
+                            {% if channel.channel_id == selected_channel %}
+                                {{ channel.channel_name }}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        All channels
+                    {% endif %}
+                </h3>
+                <span class="messages-count">{{ pagination.total }} messages</span>
+            </div>
+
+            <div class="messages-list" id="messages-list">
+                {% for message in messages %}
+                <div class="message-item" data-message-id="{{ loop.index }}">
+                    <div class="message-header">
+                        <span class="message-author">{{ message.user_name }}</span>
+                        <span class="message-timestamp">{{ message.timestamp }}</span>
+                        <div class="message-actions">
+                            <label class="maintain-toggle">
+                                <input type="checkbox" 
+                                       class="maintain-checkbox" 
+                                       data-timestamp="{{ message.timestamp }}"
+                                       data-channel-id="{{ message.channel_id }}"
+                                       data-user-id="{{ message.user_id }}"
+                                       data-message="{{ message.message }}"
+                                       {% if message.to_maintain == 'True' %}checked{% endif %}>
+                                <span class="toggle-label">Maintain</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="message-content">
+                        {{ message.message }}
+                    </div>
+                    <div class="message-meta">
+                        <span class="channel-badge">{{ message.channel_name }}</span>
+                        <span class="user-id">ID: {{ message.user_id }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if pagination.total_pages > 1 %}
+            <div class="messages-pagination">
+                {% if pagination.page > 1 %}
+                <a href="?page={{ pagination.page - 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+                {% endif %}
+                
+                <span class="pagination-info">
+                    Page {{ pagination.page }} of {{ pagination.total_pages }}
+                </span>
+                
+                {% if pagination.page < pagination.total_pages %}
+                <a href="?page={{ pagination.page + 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Handle maintain toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.maintain-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const data = {
+                timestamp: this.dataset.timestamp,
+                channel_id: this.dataset.channelId,
+                user_id: this.dataset.userId,
+                message: this.dataset.message,
+                to_maintain: this.checked
+            };
+            
+            fetch(`/api/messages/${Date.now()}/toggle_maintain`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Message status updated!', 'success');
+                } else {
+                    showToast('Update error: ' + data.error, 'error');
+                    this.checked = !this.checked; // Revert checkbox
+                }
+            })
+            .catch(error => {
+                showToast('Connection error', 'error');
+                this.checked = !this.checked; // Revert checkbox
+            });
+        });
+    });
+});
+
+function clearFilters() {
+    document.getElementById('date_from').value = '';
+    document.getElementById('date_to').value = '';
+    document.getElementById('user_filter').value = '';
+    document.getElementById('to_maintain').value = 'all';
+    document.getElementById('messages-filters-form').submit();
+}
+</script>
+{% endblock %} 
