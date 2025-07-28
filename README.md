@@ -39,11 +39,11 @@ pip install -r requirements.txt
 ```
 
 4. **Configure the database**:
-   - Modify the `config.env` file with the correct database path:
+   - Create the `config.env` file with the correct database path:
 ```env
 FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
-DATABASE_PATH=/Users/lorenzoscaduto/Desktop/wish_data.db
+DATABASE_PATH=/path/to/your/wish_data.db
 DEBUG=False
 ```
 
@@ -54,7 +54,7 @@ FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
 
 # SQLite Database Path
-DATABASE_PATH=/Users/lorenzoscaduto/Desktop/wish_data.db
+DATABASE_PATH=/path/to/your/wish_data.db
 
 # Debug Mode (True for development, False for production)
 DEBUG=False
@@ -73,7 +73,7 @@ python run.py
 
 2. **Access the interface**:
    - Open your browser and go to `http://localhost:5000`
-   - For remote access: `http://<raspberry-pi-ip>:5000`
+   - For remote access: `http://<server-ip>:5000`
 
 ## 📊 Database Structure
 
@@ -122,8 +122,8 @@ The application supports the following tables:
 # Flask Configuration
 FLASK_HOST=0.0.0.0          # Listening host (0.0.0.0 for external access)
 FLASK_PORT=5000              # Server port
-DATABASE_PATH=/Users/lorenzoscaduto/Desktop/wish_data.db  # SQLite database path
-DEBUG=False                  # Debug mode (True for development, False for production)
+DATABASE_PATH=/path/to/db     # SQLite database path
+DEBUG=False                   # Debug mode (True for development, False for production)
 
 # Additional configurations (optional)
 # SECRET_KEY=your-secret-key-here
@@ -131,7 +131,7 @@ DEBUG=False                  # Debug mode (True for development, False for produ
 ```
 
 **Configuration notes**:
-- `FLASK_HOST=0.0.0.0`: Allows external access (required for Raspberry Pi)
+- `FLASK_HOST=0.0.0.0`: Allows external access (required for remote access)
 - `FLASK_PORT=5000`: Standard Flask port (change if occupied)
 - `DATABASE_PATH`: Absolute path to `.db` file
 - `DEBUG=False`: Disables debug in production
