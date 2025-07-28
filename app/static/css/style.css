@@ -27,6 +27,7 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -67,6 +68,15 @@ body {
     color: #ffffff;
 }
 
+.sidebar-link.active {
+    background-color: #5865f2;
+    color: #ffffff;
+}
+
+.sidebar-link.active:hover {
+    background-color: #4752c4;
+}
+
 .sidebar-link i {
     margin-right: 12px;
     width: 16px;
@@ -96,24 +106,43 @@ body {
     overflow: hidden;
 }
 
-.content-header {
-    background-color: #36393f;
-    border-bottom: 1px solid #202225;
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.content-body {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    position: relative;
 }
 
-.content-header h1 {
+/* Special styling for messages page */
+.content-body .messages-view-container {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.content-body:has(.messages-view-container) {
+    padding: 0;
+}
+
+/* Hamburger menu button */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
     color: #ffffff;
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 100;
 }
 
-.header-actions {
-    display: flex;
-    gap: 12px;
+.mobile-menu-toggle:hover {
+    background-color: #40444b;
 }
 
 .content-body {
@@ -281,12 +310,42 @@ body {
     margin: 0 auto;
 }
 
+/* Messages view container */
+.messages-view-container {
+    max-width: none;
+    margin: 0;
+    background-color: #2f3136;
+    border-radius: 0;
+    border: none;
+    overflow: hidden;
+    box-shadow: none;
+    height: 100%;
+}
+
+
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.filter-group label {
+    color: #b9bbbe;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+/* Improved filter panel styling */
 .filters-panel {
     background-color: #2f3136;
     border-radius: 8px;
     padding: 24px;
     margin-bottom: 24px;
     border: 1px solid #40444b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filters-form {
@@ -296,16 +355,21 @@ body {
     align-items: end;
 }
 
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.filter-group label {
-    color: #b9bbbe;
-    font-size: 14px;
-    font-weight: 500;
+/* Responsive improvements for filters */
+@media (max-width: 768px) {
+    .filters-form {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .filter-group {
+        margin-bottom: 8px;
+    }
+    
+    .filters-panel {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
 }
 
 .form-control {
@@ -315,18 +379,128 @@ body {
     background-color: #40444b;
     color: #dcddde;
     font-size: 14px;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    min-height: 36px;
 }
 
 .form-control:focus {
     outline: none;
     border-color: #5865f2;
+    box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2);
+}
+
+/* Specific styles for select dropdowns */
+.form-control[type="select"],
+.form-control[data-type="select"],
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23b9bbbe' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
+    cursor: pointer;
+}
+
+.form-control[type="select"]:hover,
+.form-control[data-type="select"]:hover,
+select.form-control:hover {
+    border-color: #5865f2;
+    background-color: #4f545c;
+}
+
+.form-control[type="select"]:focus,
+.form-control[data-type="select"]:focus,
+select.form-control:focus {
+    border-color: #5865f2;
+    background-color: #4f545c;
+}
+
+/* Style for select options */
+.form-control option {
+    background-color: #2f3136;
+    color: #dcddde;
+    padding: 8px 12px;
+}
+
+/* Hover effect for form controls */
+.form-control:hover {
+    border-color: #5865f2;
+    background-color: #4f545c;
+}
+
+/* Specific styling for datetime-local inputs */
+.form-control[type="datetime-local"] {
+    position: relative;
+}
+
+.form-control[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(0.7);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.form-control[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Improved placeholder styling */
+.form-control::placeholder {
+    color: #72767d;
+    opacity: 1;
+}
+
+/* Focus ring for better accessibility */
+.form-control:focus-visible {
+    outline: 2px solid #5865f2;
+    outline-offset: 2px;
+}
+
+/* Specific styling for search input */
+.form-control[type="text"] {
+    min-width: 200px;
+}
+
+.form-control[type="text"]::placeholder {
+    color: #72767d;
+    font-style: italic;
 }
 
 .filter-actions {
     display: flex;
     gap: 12px;
     align-items: end;
+    flex-wrap: wrap;
+}
+
+.filter-actions .btn {
+    min-width: 100px;
+    justify-content: center;
+}
+
+/* Improved button styling for filter actions */
+.filter-actions .btn-primary {
+    background-color: #5865f2;
+    border: 1px solid #5865f2;
+}
+
+.filter-actions .btn-primary:hover {
+    background-color: #4752c4;
+    border-color: #4752c4;
+    transform: translateY(-1px);
+}
+
+.filter-actions .btn-secondary {
+    background-color: #4f545c;
+    border: 1px solid #4f545c;
+}
+
+.filter-actions .btn-secondary:hover {
+    background-color: #5d6269;
+    border-color: #5d6269;
+    transform: translateY(-1px);
 }
 
 .table-container {
@@ -406,6 +580,42 @@ body {
     color: #ffffff;
 }
 
+/* Additional status badge styles for verification table */
+.status-pending {
+    background-color: #faa61a;
+    color: #ffffff;
+}
+
+.status-approved {
+    background-color: #43b581;
+    color: #ffffff;
+}
+
+.status-rejected {
+    background-color: #f04747;
+    color: #ffffff;
+}
+
+.status-verified {
+    background-color: #43b581;
+    color: #ffffff;
+}
+
+.status-unverified {
+    background-color: #f04747;
+    color: #ffffff;
+}
+
+.status-active {
+    background-color: #43b581;
+    color: #ffffff;
+}
+
+.status-inactive {
+    background-color: #72767d;
+    color: #ffffff;
+}
+
 /* Pagination */
 .pagination {
     display: flex;
@@ -435,8 +645,15 @@ body {
 /* Messages view */
 .messages-view {
     display: flex;
-    height: calc(100vh - 120px);
+    height: 100%;
     gap: 0;
+}
+
+.messages-header-mobile {
+    display: none;
+    padding: 16px 20px;
+    border-bottom: 1px solid #202225;
+    background-color: #36393f;
 }
 
 .messages-sidebar {
@@ -513,6 +730,7 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #36393f;
+    height: 100%;
 }
 
 .messages-filters {
@@ -533,15 +751,27 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    height: 100%;
+}
+
+.messages-table-container {
+    background-color: #2f3136;
+    border-radius: 8px;
+    border: 1px solid #40444b;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .messages-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #202225;
+    padding: 20px 24px;
+    border-bottom: 1px solid #40444b;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #36393f;
+    background-color: #2f3136;
 }
 
 .messages-header h3 {
@@ -558,20 +788,25 @@ body {
 .messages-list {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 0;
 }
 
 .message-item {
-    background-color: #2f3136;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-    border: 1px solid #40444b;
+    background-color: transparent;
+    border-radius: 0;
+    padding: 16px 20px;
+    margin-bottom: 0;
+    border: none;
+    border-bottom: 1px solid #40444b;
     transition: all 0.2s ease;
 }
 
+.message-item:last-child {
+    border-bottom: none;
+}
+
 .message-item:hover {
-    border-color: #5865f2;
+    background-color: #40444b;
 }
 
 .message-header {
@@ -647,9 +882,9 @@ body {
 }
 
 .messages-pagination {
-    padding: 16px 20px;
-    border-top: 1px solid #202225;
-    background-color: #36393f;
+    padding: 20px 24px;
+    border-top: 1px solid #40444b;
+    background-color: #2f3136;
 }
 
 /* Toast notifications */
@@ -742,11 +977,53 @@ body {
         flex-direction: column;
     }
     
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
     .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        width: 280px;
+    }
+    
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .main-content {
         width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid #202225;
+    }
+    
+    .content-body {
+        padding: 16px 20px;
+    }
+    
+    .content-body .messages-view-container {
+        margin: 0;
+        height: 100vh;
+    }
+    
+    .content-body:has(.messages-view-container) {
+        padding: 0;
+    }
+    
+    .mobile-menu-toggle {
+        top: 12px;
+        left: 12px;
+    }
+    
+    .messages-view-container {
+        margin: 0;
+        max-width: none;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        height: 100%;
     }
     
     .messages-view {
@@ -754,11 +1031,23 @@ body {
         height: auto;
     }
     
+    .messages-header-mobile {
+        display: block;
+    }
+    
     .messages-sidebar {
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid #202225;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        width: 280px;
+        transition: transform 0.3s ease;
+    }
+    
+    .messages-sidebar.mobile-open {
+        transform: translateX(0);
     }
     
     .filters-form {
@@ -771,5 +1060,21 @@ body {
     
     .dashboard-stats {
         grid-template-columns: 1fr;
+    }
+    
+    /* Mobile overlay for sidebar */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+    
+    .sidebar-overlay.mobile-open {
+        display: block;
     }
 } 

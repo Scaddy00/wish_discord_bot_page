@@ -61,6 +61,82 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Mobile sidebar functionality
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    
+    if (mobileMenuToggle && sidebar && sidebarOverlay) {
+        // Toggle sidebar
+        mobileMenuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('mobile-open');
+            sidebarOverlay.classList.toggle('mobile-open');
+        });
+        
+        // Close sidebar when clicking overlay
+        sidebarOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('mobile-open');
+        });
+        
+        // Close sidebar when clicking on a link (on mobile)
+        const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('mobile-open');
+                    sidebarOverlay.classList.remove('mobile-open');
+                }
+            });
+        });
+        
+        // Close sidebar on window resize if screen becomes larger
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.remove('mobile-open');
+            }
+        });
+    }
+    
+    // Messages sidebar mobile functionality
+    const messagesMobileMenuToggle = document.getElementById('messages-mobile-menu-toggle');
+    const messagesSidebar = document.getElementById('messages-sidebar');
+    const messagesSidebarOverlay = document.getElementById('messages-sidebar-overlay');
+    
+    if (messagesMobileMenuToggle && messagesSidebar && messagesSidebarOverlay) {
+        // Toggle messages sidebar
+        messagesMobileMenuToggle.addEventListener('click', function() {
+            messagesSidebar.classList.toggle('mobile-open');
+            messagesSidebarOverlay.classList.toggle('mobile-open');
+        });
+        
+        // Close messages sidebar when clicking overlay
+        messagesSidebarOverlay.addEventListener('click', function() {
+            messagesSidebar.classList.remove('mobile-open');
+            messagesSidebarOverlay.classList.remove('mobile-open');
+        });
+        
+        // Close messages sidebar when clicking on a channel link (on mobile)
+        const channelLinks = messagesSidebar.querySelectorAll('.channel-item');
+        channelLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    messagesSidebar.classList.remove('mobile-open');
+                    messagesSidebarOverlay.classList.remove('mobile-open');
+                }
+            });
+        });
+        
+        // Close messages sidebar on window resize if screen becomes larger
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                messagesSidebar.classList.remove('mobile-open');
+                messagesSidebarOverlay.classList.remove('mobile-open');
+            }
+        });
+    }
 });
 
 // AJAX functions for dynamic content loading
@@ -201,7 +277,13 @@ function clearFilters() {
             if (input.type === 'datetime-local' || input.type === 'text') {
                 input.value = '';
             } else if (input.tagName === 'SELECT') {
-                input.value = input.querySelector('option[value="all"]') ? 'all' : '';
+                // Check if there's an 'all' option, otherwise set to first option
+                const allOption = input.querySelector('option[value="all"]');
+                if (allOption) {
+                    input.value = 'all';
+                } else if (input.options.length > 0) {
+                    input.value = input.options[0].value;
+                }
             }
         });
         form.submit();

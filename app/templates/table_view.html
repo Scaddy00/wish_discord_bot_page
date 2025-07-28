@@ -43,6 +43,39 @@
                 </select>
             </div>
             {% endif %}
+            {% if 'type' in schema|map(attribute='name') %}
+            <div class="filter-group">
+                <label for="type_filter">Type:</label>
+                <select id="type_filter" name="type_filter" class="form-control">
+                    <option value="all" {% if filters.type_filter == 'all' %}selected{% endif %}>All types</option>
+                    {% for type_value in type_values %}
+                    <option value="{{ type_value }}" {% if filters.type_filter == type_value %}selected{% endif %}>{{ type_value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            {% if 'status' in schema|map(attribute='name') %}
+            <div class="filter-group">
+                <label for="status_filter">Status:</label>
+                <select id="status_filter" name="status_filter" class="form-control">
+                    <option value="all" {% if filters.status_filter == 'all' %}selected{% endif %}>All statuses</option>
+                    {% for status_value in status_values %}
+                    <option value="{{ status_value }}" {% if filters.status_filter == status_value %}selected{% endif %}>{{ status_value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            {% if 'command' in schema|map(attribute='name') %}
+            <div class="filter-group">
+                <label for="command_filter">Command:</label>
+                <select id="command_filter" name="command_filter" class="form-control">
+                    <option value="all" {% if filters.command_filter == 'all' %}selected{% endif %}>All commands</option>
+                    {% for command_value in command_values %}
+                    <option value="{{ command_value }}" {% if filters.command_filter == command_value %}selected{% endif %}>{{ command_value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
             <div class="filter-actions">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Filter
@@ -78,6 +111,10 @@
                             {% if column.name == 'timestamp' %}
                                 <span class="timestamp">{{ row[column.name] }}</span>
                             {% elif column.name == 'to_maintain' %}
+                                <span class="status-badge status-{{ row[column.name]|lower }}">
+                                    {{ row[column.name] }}
+                                </span>
+                            {% elif column.name == 'status' %}
                                 <span class="status-badge status-{{ row[column.name]|lower }}">
                                     {{ row[column.name] }}
                                 </span>
@@ -119,13 +156,28 @@
 {% block scripts %}
 <script>
 function clearFilters() {
-    document.getElementById('date_from').value = '';
-    document.getElementById('date_to').value = '';
-    document.getElementById('user_filter').value = '';
-    if (document.getElementById('to_maintain')) {
-        document.getElementById('to_maintain').value = 'all';
-    }
-    document.getElementById('filters-form').submit();
+    // Clear date inputs
+    const dateFrom = document.getElementById('date_from');
+    const dateTo = document.getElementById('date_to');
+    if (dateFrom) dateFrom.value = '';
+    if (dateTo) dateTo.value = '';
+    
+    // Clear user filter
+    const userFilter = document.getElementById('user_filter');
+    if (userFilter) userFilter.value = '';
+    
+    // Reset select filters to 'all'
+    const filters = ['to_maintain', 'type_filter', 'status_filter', 'command_filter'];
+    filters.forEach(filterId => {
+        const element = document.getElementById(filterId);
+        if (element) {
+            element.value = 'all';
+        }
+    });
+    
+    // Submit the form
+    const form = document.getElementById('filters-form');
+    if (form) form.submit();
 }
 
 function exportTable() {

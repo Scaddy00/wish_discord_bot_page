@@ -60,6 +60,18 @@ class DatabaseManager:
                     elif key == 'to_maintain' and value != 'all':
                         where_conditions.append("to_maintain = ?")
                         params.append(value)
+                    elif key == 'type_filter' and value != 'all':
+                        where_conditions.append("type = ?")
+                        params.append(value)
+                    elif key == 'status_filter' and value != 'all':
+                        where_conditions.append("status = ?")
+                        params.append(value)
+                    elif key == 'command_filter' and value != 'all':
+                        where_conditions.append("command = ?")
+                        params.append(value)
+                    elif key == 'text_filter' and value:
+                        where_conditions.append("message LIKE ?")
+                        params.append(f"%{value}%")
             
             if where_conditions:
                 query += " WHERE " + " AND ".join(where_conditions)
@@ -123,6 +135,10 @@ class DatabaseManager:
                         query += " AND to_maintain = ?"
                         count_query += " AND to_maintain = ?"
                         params.append(value)
+                    elif key == 'text_filter' and value:
+                        query += " AND message LIKE ?"
+                        count_query += " AND message LIKE ?"
+                        params.append(f"%{value}%")
         
         query += " ORDER BY timestamp DESC LIMIT ? OFFSET ?"
         params.extend([per_page, offset])
@@ -193,6 +209,13 @@ class DatabaseManager:
         except Exception as e:
             print(f"Error updating message: {e}")
             return False
+    
+    def get_unique_values(self, table_name: str, column_name: str) -> List[str]:
+        """Get unique values for a specific column"""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT DISTINCT {column_name} FROM {table_name} WHERE {column_name} IS NOT NULL ORDER BY {column_name}")
+            return [str(row[0]) for row in cursor.fetchall()]
     
     def get_table_stats(self) -> Dict[str, int]:
         """Get record count for all tables"""

@@ -4,9 +4,13 @@
 {% block page_title %}Messages{% endblock %}
 
 {% block content %}
-<div class="messages-view">
-    <!-- Sidebar with channels -->
-    <div class="messages-sidebar">
+<div class="messages-view-container">
+    <div class="messages-view">
+        <!-- Mobile overlay for messages sidebar -->
+        <div class="sidebar-overlay" id="messages-sidebar-overlay"></div>
+        
+        <!-- Sidebar with channels -->
+        <div class="messages-sidebar" id="messages-sidebar">
         <div class="sidebar-header">
             <h3><i class="fas fa-hashtag"></i> Channels</h3>
         </div>
@@ -28,10 +32,17 @@
         </div>
     </div>
 
-    <!-- Main chat area -->
-    <div class="messages-main">
-        <!-- Filters -->
-        <div class="messages-filters">
+            <!-- Main chat area -->
+        <div class="messages-main">
+            <!-- Mobile menu toggle for messages sidebar -->
+            <div class="messages-header-mobile">
+                <button class="mobile-menu-toggle" id="messages-mobile-menu-toggle">
+                    <i class="fas fa-hashtag"></i>
+                </button>
+            </div>
+            
+            <!-- Filters -->
+            <div class="messages-filters">
             <form id="messages-filters-form" class="filters-form">
                 <div class="filter-group">
                     <label for="date_from">Date from:</label>
@@ -51,6 +62,11 @@
                         <option value="{{ user }}" {% if filters.user_filter == user %}selected{% endif %}>{{ user }}</option>
                         {% endfor %}
                     </select>
+                </div>
+                <div class="filter-group">
+                    <label for="text_filter">Search in messages:</label>
+                    <input type="text" id="text_filter" name="text_filter" 
+                           value="{{ filters.text_filter }}" placeholder="Search in message content..." class="form-control">
                 </div>
                 <div class="filter-group">
                     <label for="to_maintain">Status:</label>
@@ -73,22 +89,23 @@
 
         <!-- Messages container -->
         <div class="messages-container">
-            <div class="messages-header">
-                <h3>
-                    {% if selected_channel %}
-                        {% for channel in channels %}
-                            {% if channel.channel_id == selected_channel %}
-                                {{ channel.channel_name }}
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        All channels
-                    {% endif %}
-                </h3>
-                <span class="messages-count">{{ pagination.total }} messages</span>
-            </div>
+            <div class="messages-table-container">
+                <div class="messages-header">
+                    <h3>
+                        {% if selected_channel %}
+                            {% for channel in channels %}
+                                {% if channel.channel_id == selected_channel %}
+                                    {{ channel.channel_name }}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            All channels
+                        {% endif %}
+                    </h3>
+                    <span class="messages-count">{{ pagination.total }} messages</span>
+                </div>
 
-            <div class="messages-list" id="messages-list">
+                <div class="messages-list" id="messages-list">
                 {% for message in messages %}
                 <div class="message-item" data-message-id="{{ loop.index }}">
                     <div class="message-header">
@@ -116,28 +133,30 @@
                     </div>
                 </div>
                 {% endfor %}
-            </div>
+                </div>
 
-            <!-- Pagination -->
-            {% if pagination.total_pages > 1 %}
-            <div class="messages-pagination">
-                {% if pagination.page > 1 %}
-                <a href="?page={{ pagination.page - 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </a>
-                {% endif %}
-                
-                <span class="pagination-info">
-                    Page {{ pagination.page }} of {{ pagination.total_pages }}
-                </span>
-                
-                {% if pagination.page < pagination.total_pages %}
-                <a href="?page={{ pagination.page + 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
-                    Next <i class="fas fa-chevron-right"></i>
-                </a>
+                <!-- Pagination -->
+                {% if pagination.total_pages > 1 %}
+                <div class="messages-pagination">
+                    {% if pagination.page > 1 %}
+                    <a href="?page={{ pagination.page - 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                    {% endif %}
+                    
+                    <span class="pagination-info">
+                        Page {{ pagination.page }} of {{ pagination.total_pages }}
+                    </span>
+                    
+                    {% if pagination.page < pagination.total_pages %}
+                    <a href="?page={{ pagination.page + 1 }}&{{ request.query_string.decode() }}" class="pagination-link">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
                 {% endif %}
             </div>
-            {% endif %}
+                    </div>
         </div>
     </div>
 </div>
@@ -184,11 +203,27 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function clearFilters() {
-    document.getElementById('date_from').value = '';
-    document.getElementById('date_to').value = '';
-    document.getElementById('user_filter').value = '';
-    document.getElementById('to_maintain').value = 'all';
-    document.getElementById('messages-filters-form').submit();
+    // Clear date inputs
+    const dateFrom = document.getElementById('date_from');
+    const dateTo = document.getElementById('date_to');
+    if (dateFrom) dateFrom.value = '';
+    if (dateTo) dateTo.value = '';
+    
+    // Clear user filter
+    const userFilter = document.getElementById('user_filter');
+    if (userFilter) userFilter.value = '';
+    
+    // Clear text filter
+    const textFilter = document.getElementById('text_filter');
+    if (textFilter) textFilter.value = '';
+    
+    // Reset to_maintain filter
+    const toMaintain = document.getElementById('to_maintain');
+    if (toMaintain) toMaintain.value = 'all';
+    
+    // Submit the form
+    const form = document.getElementById('messages-filters-form');
+    if (form) form.submit();
 }
 </script>
 {% endblock %} 

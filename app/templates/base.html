@@ -17,33 +17,36 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Mobile overlay for sidebar -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        
         <!-- Sidebar -->
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2><i class="fas fa-robot"></i> Wish Bot</h2>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="{{ url_for('main.index') }}" class="sidebar-link">
+                <li><a href="{{ url_for('main.index') }}" class="sidebar-link {% if request.endpoint == 'main.index' %}active{% endif %}">
                     <i class="fas fa-home"></i> Dashboard
                 </a></li>
-                <li><a href="{{ url_for('main.messages_view') }}" class="sidebar-link">
+                <li><a href="{{ url_for('main.messages_view') }}" class="sidebar-link {% if request.endpoint == 'main.messages_view' %}active{% endif %}">
                     <i class="fas fa-comments"></i> Messages
                 </a></li>
                 <li class="sidebar-divider"></li>
                 <li class="sidebar-section">Database Tables</li>
-                <li><a href="{{ url_for('main.table_view', table_name='events') }}" class="sidebar-link">
+                <li><a href="{{ url_for('main.table_view', table_name='events') }}" class="sidebar-link {% if request.endpoint == 'main.table_view' and request.view_args.get('table_name') == 'events' %}active{% endif %}">
                     <i class="fas fa-calendar"></i> Events
                 </a></li>
-                <li><a href="{{ url_for('main.table_view', table_name='commands') }}" class="sidebar-link">
+                <li><a href="{{ url_for('main.table_view', table_name='commands') }}" class="sidebar-link {% if request.endpoint == 'main.table_view' and request.view_args.get('table_name') == 'commands' %}active{% endif %}">
                     <i class="fas fa-terminal"></i> Commands
                 </a></li>
-                <li><a href="{{ url_for('main.table_view', table_name='errors') }}" class="sidebar-link">
+                <li><a href="{{ url_for('main.table_view', table_name='errors') }}" class="sidebar-link {% if request.endpoint == 'main.table_view' and request.view_args.get('table_name') == 'errors' %}active{% endif %}">
                     <i class="fas fa-exclamation-triangle"></i> Errors
                 </a></li>
-                <li><a href="{{ url_for('main.table_view', table_name='verification') }}" class="sidebar-link">
+                <li><a href="{{ url_for('main.table_view', table_name='verification') }}" class="sidebar-link {% if request.endpoint == 'main.table_view' and request.view_args.get('table_name') == 'verification' %}active{% endif %}">
                     <i class="fas fa-shield-alt"></i> Verification
                 </a></li>
-                <li><a href="{{ url_for('main.table_view', table_name='welcome') }}" class="sidebar-link">
+                <li><a href="{{ url_for('main.table_view', table_name='welcome') }}" class="sidebar-link {% if request.endpoint == 'main.table_view' and request.view_args.get('table_name') == 'welcome' %}active{% endif %}">
                     <i class="fas fa-hand-wave"></i> Welcome
                 </a></li>
             </ul>
@@ -51,12 +54,11 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="content-header">
-                <h1>{% block page_title %}Dashboard{% endblock %}</h1>
-                {% block header_actions %}{% endblock %}
-            </header>
-            
             <div class="content-body">
+                <!-- Mobile menu toggle -->
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
                 {% block content %}{% endblock %}
             </div>
         </main>
