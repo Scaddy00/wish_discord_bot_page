@@ -11,7 +11,7 @@ def create_app():
     
     # Configuration
     app.config['SECRET_KEY'] = 'your-secret-key-here'
-    app.config['DATABASE_PATH'] = os.getenv('DATABASE_PATH', '/Users/lorenzoscaduto/Desktop/wish_data.db')
+    app.config['DATABASE_PATH'] = os.getenv('DATABASE_PATH', '/path/to/wish_data.db')
     
     # Register blueprints
     from app.routes import main, api

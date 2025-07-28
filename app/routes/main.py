@@ -5,7 +5,7 @@ import os
 main = Blueprint('main', __name__)
 
 # Initialize database manager
-db_manager = DatabaseManager(os.getenv('DATABASE_PATH', '/Users/lorenzoscaduto/Desktop/wish_data.db'))
+db_manager = DatabaseManager(os.getenv('DATABASE_PATH', '/path/to/wish_data.db'))
 
 @main.route('/')
 def index():
