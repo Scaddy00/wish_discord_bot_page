@@ -2,8 +2,12 @@ from app import create_app
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
-load_dotenv('config.env')
+# Get the directory where run.py is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ENV_FILE = os.path.join(BASE_DIR, 'config.env')
+
+# Load environment variables with absolute path
+load_dotenv(ENV_FILE)
 
 app = create_app()
 
@@ -14,5 +18,6 @@ if __name__ == '__main__':
     
     print(f"Starting Flask app on {host}:{port}")
     print(f"Database path: {os.getenv('DATABASE_PATH')}")
+    print(f"Config file: {ENV_FILE}")
     
     app.run(host=host, port=port, debug=debug) 
